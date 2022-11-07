@@ -1,6 +1,7 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
 import { fetchCountries } from './js/fetchCountries';
+import Notiflix from 'notiflix';
 
 const DEBOUNCE_DELAY = 300;
 let userInput = null;
@@ -20,7 +21,6 @@ function handleInputForm(e) {
   userInput = refs.input.value.trim();
   fetchCountries(userInput)
     .then(data => {
-      console.log(data);
       if (data.length === 1) {
         const langObj = data[0].languages;
         const languages = Object.values(langObj);
@@ -32,12 +32,14 @@ function handleInputForm(e) {
         });
       }
       if (data.length > 10) {
-        console.log(
+        Notiflix.Notify.info(
           'Too many matches found. Please enter a more specific name.'
         );
       }
     })
-    .catch(() => console.log('Oops, there is no country with that name'));
+    .catch(() =>
+      Notiflix.Notify.failure('Oops, there is no country with that name')
+    );
 }
 
 function createMarkupCard(country, languages) {
